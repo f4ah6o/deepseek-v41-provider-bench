@@ -1,9 +1,9 @@
 schema_version: 1
 profile:
-  name: throughput-cold
+  name: repo-review
   prompt_file: benchmarks/throughput/repo-review.txt
   fallback_context_file: benchmarks/throughput/fixture.txt
-  max_output_tokens: 512
+  max_output_tokens: 4096
   timeout_seconds: 180
   user_agent: deepseek-v41-provider-bench/0.1
   cold_cache_nonce: true
