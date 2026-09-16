@@ -2,7 +2,7 @@
 
 Reproducible benchmark for **DeepSeek V4.1 Flash** served by multiple providers. The initial provider set is OpenCode Go, HAI, DeepSeek Platform, and Fireworks AI.
 
-The hourly benchmark sends the same prompt, context, output limit, and cache-busting nonce to all enabled providers concurrently. It records raw SSE chunks with timestamps, visible output, reasoning output when exposed, provider-reported token usage, TTFT, decode throughput, wall time, HTTP failures, and nominal token cost.
+The hourly benchmark sends the same prompt, context, output limit, and cache-busting nonce to all enabled providers concurrently. The default `repo-review` profile allows up to **4096 output tokens** so responses can complete naturally while still recording generation throughput. It records raw SSE chunks with timestamps, visible output, reasoning output when exposed, provider-reported token usage, TTFT, decode throughput, wall time, HTTP failures, and nominal token cost.
 
 ## Providers
 
@@ -61,7 +61,7 @@ The workflow does not push generated benchmark data back to the repository. It u
 ## Fairness controls
 
 - Requests are launched concurrently with `asyncio.gather`.
-- The same prompt/context and output cap are used for every provider in a run.
+- The same prompt/context and 4096-token output cap are used for every provider in a run.
 - A random nonce is prepended to each hourly prompt to make the default profile a cold-prefix measurement.
 - Provider-reported usage is used for tok/s. If a provider omits streaming usage, `decode_tok_sec` remains null rather than inventing a tokenizer estimate.
 - OpenCode Go gets a benchmark-specific User-Agent and stable `x-opencode-session` for the conversation.
