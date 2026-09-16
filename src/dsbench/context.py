@@ -49,7 +49,7 @@ def build_context(repo_dir: Path, *, max_context_bytes: int = 120_000, max_file_
         chunk = f"FILE: {rel}\n```\n{text}\n```\n"
         encoded = chunk.encode("utf-8")
         if used + len(encoded) > max_context_bytes:
-            break
+            continue
         chunks.append(chunk)
         used += len(encoded)
     if not chunks:
@@ -59,7 +59,11 @@ def build_context(repo_dir: Path, *, max_context_bytes: int = 120_000, max_file_
 
 def _candidate_files(root: Path) -> Iterable[Path]:
     preferred_names = {"README.md", "pyproject.toml", "Cargo.toml", "go.mod", "package.json", "moon.mod.json"}
-    files = [p for p in root.rglob("*") if p.is_file() and ".git" not in p.parts]
+    files = [
+        p for p in root.rglob("*")
+        if p.is_file() and ".git" not in p.parts
+        and (p.suffix.lower() in TEXT_SUFFIXES or p.name in preferred_names)
+    ]
     return iter(sorted(files, key=lambda p: (0 if p.name in preferred_names else 1, p.relative_to(root).as_posix())))
 
 
