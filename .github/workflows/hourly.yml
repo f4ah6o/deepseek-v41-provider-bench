@@ -11,7 +11,11 @@ on:
     - cron: "17 * * * *"
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: benchmark-main
+  cancel-in-progress: false
 
 jobs:
   benchmark:
@@ -19,6 +23,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -44,11 +50,29 @@ jobs:
           if [[ -n "${PROVIDERS:-}" ]]; then args+=(--providers "$PROVIDERS"); fi
           python -m dsbench.cli run "${args[@]}"
           python -m dsbench.cli aggregate
+      - name: Update compact statistics
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f results/hourly.csv ]]; then
+            python -m dsbench.stats \
+              --github-run-id "$GITHUB_RUN_ID" \
+              --github-run-url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          fi
+      - name: Validate provider results
+        if: always()
+        shell: bash
+        run: |
           python - <<'PY'
           import csv
+          import pathlib
           import sys
 
-          with open("results/hourly.csv", newline="", encoding="utf-8") as handle:
+          path = pathlib.Path("results/hourly.csv")
+          if not path.exists():
+              print("No provider results were recorded", file=sys.stderr)
+              raise SystemExit(1)
+          with path.open(newline="", encoding="utf-8") as handle:
               rows = list(csv.DictReader(handle))
           if not rows:
               print("No provider results were recorded", file=sys.stderr)
@@ -70,3 +94,19 @@ jobs:
           path: results/
           if-no-files-found: warn
           retention-days: 30
+      - name: Publish statistics to main
+        if: always()
+        shell: bash
+        run: |
+          if [[ ! -f data/history.csv || ! -f STATS.md ]]; then
+            exit 0
+          fi
+          git add data/history.csv STATS.md
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data: update benchmark statistics [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
