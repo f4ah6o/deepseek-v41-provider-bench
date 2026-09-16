@@ -1,0 +1,22 @@
+schema_version: 1
+# Select repositories by setting selected: true and pinning an exact 40-char commit SHA.
+repositories:
+  - repository: f4ah6o/direct-go-sdk
+    selected: false
+    commit: null
+  - repository: f4ah6o/temote-mcp
+    selected: false
+    commit: null
+  - repository: opz-rs/opz
+    alias: f4ah6o/opz
+    selected: false
+    commit: null
+  - repository: f4ah6o/calver-action
+    selected: false
+    commit: null
+  - repository: f4ah6o/Proped
+    selected: false
+    commit: null
+  - repository: horideicom/jww_parser.mbt
+    selected: false
+    commit: null

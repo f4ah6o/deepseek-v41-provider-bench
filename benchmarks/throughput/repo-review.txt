@@ -1,0 +1,9 @@
+Inspect the supplied repository snapshot.
+
+Report, in this exact order:
+1. Architecture: the major components and their responsibilities.
+2. Execution flow: the primary runtime path from entry point to main behavior.
+3. Risks: exactly three concrete implementation risks grounded in the supplied files.
+4. Improvement: one specific code-level improvement and why it helps.
+
+Every technical claim must be grounded only in the supplied repository content. Do not invent missing files or behavior. Be concise but technically specific.

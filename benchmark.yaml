@@ -1,0 +1,69 @@
+schema_version: 1
+profile:
+  name: throughput-cold
+  prompt_file: benchmarks/throughput/repo-review.txt
+  fallback_context_file: benchmarks/throughput/fixture.txt
+  max_output_tokens: 512
+  timeout_seconds: 180
+  user_agent: deepseek-v41-provider-bench/0.1
+  cold_cache_nonce: true
+
+providers:
+  opencode_go:
+    enabled: true
+    base_url: https://opencode.ai/zen/go/v1
+    model: deepseek-v4.1-flash
+    api_key_env: OPENCODE_GO_API_KEY
+    billing_mode: subscription
+    request_overrides:
+      reasoning_effort: none
+    headers:
+      x-opencode-session: "{session_id}"
+    pricing:
+      currency: USD
+      weekday_peak_windows_utc: ["01:00-04:00", "06:00-10:00"]
+      offpeak: {input_miss: 0.15, input_cache: 0.003, output: 0.60}
+      peak: {input_miss: 0.30, input_cache: 0.006, output: 1.20}
+
+  hai:
+    enabled: true
+    base_url: https://hai-api.hcloud.ltd/v1
+    model: deepseek-v4.1-flash
+    api_key_env: HAI_API_KEY
+    billing_mode: subscription
+    request_overrides:
+      reasoning_effort: none
+    pricing:
+      currency: JPY
+      fixed: {input_miss: 60.0, input_cache: 60.0, output: 240.0}
+
+  deepseek:
+    enabled: true
+    base_url: https://api.deepseek.com
+    model: deepseek-flash
+    api_key_env: DEEPSEEK_API_KEY
+    billing_mode: prepaid
+    balance_hint: 5.0
+    max_estimated_request_cost: 0.10
+    request_overrides:
+      reasoning_effort: none
+      thinking: {type: disabled}
+    pricing:
+      currency: USD
+      weekday_peak_windows_utc: ["01:00-04:00", "06:00-10:00"]
+      offpeak: {input_miss: 0.15, input_cache: 0.003, output: 0.60}
+      peak: {input_miss: 0.30, input_cache: 0.006, output: 1.20}
+
+  fireworks:
+    enabled: true
+    base_url: https://api.fireworks.ai/inference/v1
+    model: accounts/fireworks/models/deepseek-v4p1-flash
+    api_key_env: FIREWORKS_API_KEY
+    billing_mode: prepaid
+    balance_hint: 5.0
+    max_estimated_request_cost: 0.10
+    request_overrides:
+      thinking: {type: disabled}
+    pricing:
+      currency: USD
+      fixed: {input_miss: 0.22, input_cache: 0.007, output: 0.66}

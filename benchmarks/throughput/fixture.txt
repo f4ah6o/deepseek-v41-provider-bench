@@ -1,0 +1,23 @@
+FILE: src/example.py
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Job:
+    name: str
+    retries: int = 2
+
+def run(job: Job) -> str:
+    for attempt in range(job.retries + 1):
+        try:
+            return execute(job.name)
+        except TimeoutError:
+            if attempt == job.retries:
+                raise
+    raise AssertionError("unreachable")
+```
+
+FILE: README.md
+```text
+This fixture represents a tiny retrying job runner. execute() is provided by the runtime integration.
+```

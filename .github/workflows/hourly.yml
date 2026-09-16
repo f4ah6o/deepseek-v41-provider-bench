@@ -1,0 +1,56 @@
+name: hourly benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      providers:
+        description: Optional comma-separated provider subset
+        required: false
+        type: string
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install
+        run: python -m pip install -e .
+      - name: Build repository context when exactly one pinned repo is selected
+        id: context
+        continue-on-error: true
+        run: python -m dsbench.cli prepare-context --output .cache/context.txt
+      - name: Run all providers concurrently
+        env:
+          OPENCODE_GO_API_KEY: ${{ secrets.OPENCODE_GO_API_KEY }}
+          HAI_API_KEY: ${{ secrets.HAI_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          FIREWORKS_API_KEY: ${{ secrets.FIREWORKS_API_KEY }}
+          PROVIDERS: ${{ inputs.providers }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          if [[ -f .cache/context.txt ]]; then args+=(--context-file .cache/context.txt); fi
+          if [[ -n "${PROVIDERS:-}" ]]; then args+=(--providers "$PROVIDERS"); fi
+          python -m dsbench.cli run "${args[@]}"
+          python -m dsbench.cli aggregate
+      - name: Test harness
+        run: python -m pip install -e '.[dev]' && pytest -q
+      - name: Upload raw benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsbench-${{ github.run_id }}-${{ github.run_attempt }}
+          path: results/
+          if-no-files-found: warn
+          retention-days: 30
