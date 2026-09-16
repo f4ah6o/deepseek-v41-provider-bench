@@ -2,6 +2,8 @@
 
 Reproducible benchmark for **DeepSeek V4.1 Flash** served by multiple providers. The initial provider set is OpenCode Go, HAI, DeepSeek Platform, and Fireworks AI.
 
+**Latest statistics:** [`STATS.md`](STATS.md) · **compact history:** [`data/history.csv`](data/history.csv)
+
 The hourly benchmark sends the same prompt, context, output limit, and cache-busting nonce to all enabled providers concurrently. The default `repo-review` profile allows up to **4096 output tokens** so responses can complete naturally while still recording generation throughput. It records raw SSE chunks with timestamps, visible output, reasoning output when exposed, provider-reported token usage, TTFT, decode throughput, wall time, HTTP failures, and nominal token cost.
 
 ## Providers
@@ -48,15 +50,22 @@ To benchmark a real repository, edit `repositories/manifest.yaml`, set exactly o
 dsbench prepare-context --output .cache/context.txt
 dsbench run --context-file .cache/context.txt
 dsbench aggregate
+python -m dsbench.stats
 ```
 
 Results are written under `results/YYYY-MM-DD/<run-id>/`. Each provider gets `request.json`, `stream.jsonl`, `response.txt`, optional `reasoning.txt`, and `metrics.json`. API keys are never written to result files.
+
+## Statistics
+
+`STATS.md` is generated from the compact `data/history.csv` and is updated after each hourly or manually dispatched benchmark. It shows, per provider, sample count, success rate, TTFT p50/p95, decode tok/s p50/p95, wall-time p50/p95, median output tokens, median nominal cost, and the latest raw measurement.
+
+Statistics are grouped by profile name. The retired 512-token `throughput-cold` samples remain in history for provenance but are not mixed into the current 4096-token `repo-review` summary. Raw model responses and SSE streams are not committed to the repository.
 
 ## Hourly GitHub Actions
 
 `.github/workflows/hourly.yml` runs at minute 17 of every hour and can also be started manually. GitHub scheduled workflows are not guaranteed to begin at the exact cron minute; the actual start timestamp is therefore recorded in each run.
 
-The workflow does not push generated benchmark data back to the repository. It uploads the `results/` directory as a 30-day Actions artifact, avoiding hourly commit noise and accidental persistence of model output on the public branch.
+The workflow uploads the full `results/` directory as a 30-day Actions artifact. Only compact metrics (`data/history.csv`) and the generated human-readable summary (`STATS.md`) are committed back to `main`, avoiding persistence of raw model output while keeping the benchmark easy to inspect from the repository front page.
 
 ## Fairness controls
 
