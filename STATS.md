@@ -1,8 +1,8 @@
 # Benchmark statistics
 
-Generated: `2026-09-20T21:33:44+00:00`
+Generated: `2026-09-21T00:17:08+00:00`
 
-Current profile: **`repo-review`** · max output: **4096 tokens** · runs: **27**
+Current profile: **`repo-review`** · max output: **4096 tokens** · runs: **28**
 
 Raw compact history: [`data/history.csv`](data/history.csv). Raw responses/SSE remain in GitHub Actions artifacts.
 
@@ -10,21 +10,21 @@ Raw compact history: [`data/history.csv`](data/history.csv). Raw responses/SSE r
 
 | Provider | Samples | Success | TTFT p50 | TTFT p95 | Decode p50 | Decode p95 | Wall p50 | Wall p95 | Output p50 | Cost p50 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| OpenCode Go | 27 | 100% | 1146 ms | 1482 ms | 238.8 | 266.7 | 4.19 s | 6.17 s | 691 | $0.000456 |
-| DeepSeek | 27 | 100% | 906 ms | 1145 ms | 237.9 | 257.0 | 3.87 s | 4.79 s | 697 | $0.000477 |
-| Fireworks | 27 | 100% | 688 ms | 2215 ms | 99.1 | 151.0 | 8.13 s | 11.07 s | 702 | $0.000524 |
-| HAI | 27 | 96% | 3151 ms | 28905 ms | 97.6 | 227.2 | 7.60 s | 111.69 s | 532 | ¥0.1451 |
+| OpenCode Go | 28 | 100% | 1141 ms | 1481 ms | 238.5 | 266.7 | 4.21 s | 6.11 s | 700 | $0.000462 |
+| DeepSeek | 28 | 100% | 901 ms | 1142 ms | 238.7 | 256.8 | 3.87 s | 4.77 s | 694 | $0.000476 |
+| Fireworks | 28 | 100% | 689 ms | 2186 ms | 98.3 | 150.7 | 8.24 s | 11.05 s | 711 | $0.000530 |
+| HAI | 28 | 96% | 3447 ms | 28831 ms | 95.8 | 225.2 | 7.62 s | 110.55 s | 523 | ¥0.1429 |
 
 ## Latest run
 
-Run `20260920T213316Z-ee8a7c1c` · `2026-09-20T21:33:16.273114+00:00` · [GitHub Actions](https://github.com/f4ah6o/deepseek-v41-provider-bench/actions/runs/35539054699)
+Run `20260921T001641Z-421b77c3` · `2026-09-21T00:16:41.310914+00:00` · [GitHub Actions](https://github.com/f4ah6o/deepseek-v41-provider-bench/actions/runs/35547179743)
 
 | Provider | Status | Finish | TTFT | Decode tok/s | Wall | Input | Output | Cost |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| OpenCode Go | ok | stop | 972 ms | 244.1 | 4.18 s | 281 | 770 | $0.000504 |
-| DeepSeek | ok | stop | 565 ms | 222.7 | 3.87 s | 281 | 736 | $0.000484 |
-| Fireworks | ok | stop | 377 ms | 92.4 | 8.34 s | 281 | 736 | $0.000548 |
-| HAI | ok | stop | 6499 ms | 22.6 | 27.86 s | 292 | 479 | ¥0.1325 |
+| OpenCode Go | ok | stop | 1099 ms | 238.1 | 4.38 s | 279 | 780 | $0.000510 |
+| DeepSeek | ok | stop | 639 ms | 247.5 | 3.34 s | 279 | 667 | $0.000442 |
+| Fireworks | ok | stop | 698 ms | 86.3 | 10.16 s | 279 | 817 | $0.000601 |
+| HAI | ok | stop | 4085 ms | 20.4 | 26.80 s | 290 | 462 | ¥0.1283 |
 
 ## Notes
 
